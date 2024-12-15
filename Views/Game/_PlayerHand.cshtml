@@ -1,0 +1,36 @@
+﻿@model Uno.Models.Player
+<h3>@Model.Name's Hand</h3>
+<form method="post" action="@Url.Action("DrawCard", "Game", new { playerName = Model.Name })">
+    <button type="submit">Draw Card</button>
+</form>
+<br/>
+
+<div class="player-hand">
+    @foreach (var card in Model.Hand)
+    {
+        if (card.Color != CardColor.Wild)
+        {
+            <form method="post"
+                  action="@Url.Action("PlayCard", "Game", new
+                          {
+                              playerName = Model.Name, 
+                              type = card.Type, 
+                              number = card.Number, 
+                              color = card.Color 
+                          })">
+                <button type="submit" class="card @card.Color">@card.toString()</button>
+            </form>
+        }
+        else
+        {
+            <button type="button" class="card Wild"
+                    onclick="showColorPickerModal(
+                        '@Model.Name',
+                        '@card.Type',
+                        '@card.Number',
+                        '@card.Color')">
+                @card.toString()
+            </button>
+        }
+    }
+</div>

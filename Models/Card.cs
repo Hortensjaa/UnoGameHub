@@ -50,11 +50,17 @@ public class Card
     {
         if (Type == CardType.Normal)
         {
-            return $"{Number} {Color}";
+            return $"{Number}";
         }
         else
         {
-            return $"{Type} {Color}";
+            switch (Type)
+            {
+                case CardType.DrawFour: return "+4";
+                case CardType.DrawTwo: return "+2";
+                case CardType.ChooseColor: return "Choose";
+            }
+            return $"{Type}";
         }
         
     }

@@ -41,7 +41,7 @@ public class Game
     {
         if (Players[ActivePlayer].Name != playerName)
         {
-            ErrorMessage = "It is not your turn.";
+            ErrorMessage = $"It is not your turn {playerName} - it's {Players[ActivePlayer].Name} turn.";
             return false;
         }
         if (!Players[ActivePlayer].Hand.Contains(card))
@@ -132,7 +132,7 @@ public class Game
     {
         if (Players[ActivePlayer].Name != playerName)
         {
-            ErrorMessage = "It is not your turn.";
+            ErrorMessage = $"It is not your turn {playerName} - it's {Players[ActivePlayer].Name} turn.";
             return;
         }
         ErrorMessage = null;

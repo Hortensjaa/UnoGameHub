@@ -2,108 +2,35 @@
 
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Uno Game</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-</head>
 <body>
 <h1>Uno Game</h1>
 
 <p>Cards left in deck: @Model.Deck.Cards.Count</p>
-<p>Top card: @Model.Deck.TopCard.toString()</p>
-<p>It is @Model.ActivePlayer turn, watch out! B)</p>
-
-@if (!string.IsNullOrEmpty(Model.ErrorMessage))
-{
-    <div class="alert alert-danger">
-        @Model.ErrorMessage
-    </div>
-}
-
-
-<h2>Players</h2>
-<div class="players-container">
-    @foreach (var (playerName, player) in Model.Players)
-    {
-        <div class="player-card">
-            <h3>@playerName's Hand</h3>
-            <form method="post" action="@Url.Action("DrawCard", "Game", new { playerName })">
-                <button type="submit">Draw Card</button>
-            </form>
-            <br />
-            <ul>
-                @foreach (var card in player.Hand)
-                {
-                    <li>
-                        @if (card.Color != CardColor.Wild)
-                        {
-                            <form method="post"
-                                  action="@Url.Action("PlayCard", "Game", new
-                                          {
-                                              playerName,
-                                              card.Type,
-                                              card.Number,
-                                              card.Color
-                                          })">
-                                <button type="submit">@card.toString()</button>
-                            </form>
-                        }
-                        else
-                        {
-                            <!-- Obsługa kart Wild -->
-                            <button type="button"
-                                    onclick="showColorPickerModal(
-                                        '@playerName', 
-                                        '@card.Type', 
-                                        '@card.Number', 
-                                        '@card.Color')">
-                                @card.toString()
-                            </button>
-                        }
-                    </li>
-                }
-            </ul>
-        </div>
-    }
+<div style="display: flex; justify-content: center; align-items: center; width: 100%">
+    <p class="card @Model.Deck.TopCard.Color" style="width: 200px">
+        @Model.Deck.TopCard.toString()
+    </p>
 </div>
 
-<!-- Okno wyboru koloru -->
-<div class="modal fade" id="colorPickerModal" tabindex="-1" aria-labelledby="colorPickerLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="colorPickerLabel">Choose a Color</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Select the color you want for your Wild card:</p>
-                <div class="d-flex justify-content-evenly">
-                    <button class="btn btn-primary" onclick="playWildCard('Blue')">Blue</button>
-                    <button class="btn btn-success" onclick="playWildCard('Green')">Green</button>
-                    <button class="btn btn-warning" onclick="playWildCard('Yellow')">Yellow</button>
-                    <button class="btn btn-danger" onclick="playWildCard('Red')">Red</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+
+@Html.Partial("_ErrorMessage", Model)
+
+@Html.Partial("_PlayerHand", Model.Players[Model.ActivePlayer])
+
+@Html.Partial("_ColorPickModal")
 
 <script>
     let currentPlayerName, cardType, cardNumber, cardColor;
 
-    // Pokazanie okna modalnego
     function showColorPickerModal(playerName, type, number, color) {
         currentPlayerName = playerName;
         cardType = type;
         cardNumber = number;
         cardColor = color;
 
-        // Otwórz modal
         new bootstrap.Modal(document.getElementById('colorPickerModal')).show();
     }
 
-    // Zagranie karty Wild
     function playWildCard(color) {
         const form = document.createElement('form');
         form.method = 'POST';
