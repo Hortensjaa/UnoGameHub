@@ -28,6 +28,13 @@ public class Card
     public int Number { get; }
     public CardType Type { get; }
     
+    public Card(CardType type, int number, CardColor color)
+    {
+        Color = color;
+        Type = type;
+        Number = number;
+    }
+    
     public override bool Equals(object? obj)
     {
         if (obj is not Card other) return false;
@@ -39,12 +46,6 @@ public class Card
         return HashCode.Combine(Color, Number, Type);
     }
 
-    public Card(CardType type, int number, CardColor color)
-    {
-        Color = color;
-        Type = type;
-        Number = number;
-    }
     
     public string toString()
     {

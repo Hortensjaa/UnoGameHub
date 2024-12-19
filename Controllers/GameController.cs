@@ -1,4 +1,7 @@
-﻿namespace Uno.Controllers;
+﻿using Microsoft.AspNetCore.SignalR;
+using Uno.Hubs;
+
+namespace Uno.Controllers;
 
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -8,6 +11,20 @@ using Models;
 public class GameController : Controller
 {
     private static Game? _game;
+    private readonly IHubContext<GameHub> _hubContext;
+
+    public GameController(IHubContext<GameHub> hubContext)
+    {
+        _hubContext = hubContext;
+    }
+
+    public async Task<IActionResult> PlayCard(string playerName, Card card)
+    {
+        // Perform game logic here
+        await _hubContext.Clients.All.SendAsync("ReceiveMessage", playerName, $"played {card}");
+        return RedirectToAction("Index"); 
+    }
+
 
     public ActionResult Index()
     {
